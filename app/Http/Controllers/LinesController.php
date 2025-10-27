@@ -122,17 +122,20 @@ class LinesController extends Controller
                 $message = 'El formato de la fecha es inválido. Debe ser YYYY-MM-DD HH:MM:SS';
             }
         };
-
         if ($code == 0) {
             $linea = Lines::where('tid_company', 1)
                 ->where('tid_id', $lineaTelefonica)
                 ->where('tid_startdate', $fecha)
                 ->first();
-
-            $linea->tid_startdate = $nuevaFechaAlta;
-            if ($linea->save()) {
-                $code = 0;
-                $message = 'Linea modificada correctamente';
+            if ($linea) {
+                $linea->tid_startdate = $nuevaFechaAlta;
+                if ($linea->save()) {
+                    $code = 0;
+                    $message = 'Linea modificada correctamente';
+                } else {
+                    $code = 999;
+                    $message = 'Error al modificar la linea';
+                }
             } else {
                 $code = 999;
                 $message = 'Error al modificar la linea';
@@ -187,10 +190,16 @@ class LinesController extends Controller
                 ->where('tid_id', $lineaTelefonica)
                 ->where('tid_enddate', $fecha)
                 ->first();
-            $$linea->tid_enddate = $fechaBaja;
-            if ($linea->save()) {
-                $code = 0;
-                $message = 'Linea modificada correctamente';
+
+            if ($linea) {
+                $linea->tid_enddate = $fechaBaja;
+                if ($linea->save()) {
+                    $code = 0;
+                    $message = 'Linea modificada correctamente';
+                } else {
+                    $code = 999;
+                    $message = 'Error al modificar la linea';
+                }
             } else {
                 $code = 999;
                 $message = 'Error al modificar la linea';
