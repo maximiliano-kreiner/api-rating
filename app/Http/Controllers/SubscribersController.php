@@ -120,6 +120,8 @@ class SubscribersController extends Controller
             $cliente = Subscribers::where('cli_id', $clienteId)->first();
             if ($cliente) {
                 $cliente->cli_datemodified = date('Y-m-d H:i:s');
+                $cliente->cli_lastnames = $apellidos;
+                $cliente->cli_names = $nombres;
                 if ($cliente->save() && $code == 0) {
                     $code = 0;
                     $message = 'Cliente reactivado correctamente';
