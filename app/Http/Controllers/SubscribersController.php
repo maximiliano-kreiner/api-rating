@@ -124,14 +124,14 @@ class SubscribersController extends Controller
                 $cliente->cli_names = $nombres;
                 if ($cliente->save() && $code == 0) {
                     $code = 0;
-                    $message = 'Cliente reactivado correctamente';
+                    $message = 'Cliente modificado correctamente';
                 } else {
                     $code = 999;
-                    $message = 'Error al reactivar el cliente';
+                    $message = 'Error al modificar el cliente';
                 }
             } else {
                 $code = 999;
-                $message = 'Error al reactivar el cliente';
+                $message = 'Error al modificar el cliente';
             }
         }
 
