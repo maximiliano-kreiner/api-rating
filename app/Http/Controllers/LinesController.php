@@ -20,8 +20,6 @@ class LinesController extends Controller
         $lineaTelefonica = $request->get('LineaTelefonica');
         $fecha = $request->get('Fecha');
 
-
-
         if (empty($cuenta)) {
             $code = 300;
             $message = 'La cuenta no puede estar vacia';
@@ -55,7 +53,10 @@ class LinesController extends Controller
             $message = 'La cuenta no existe';
         } else {
 
-            $lineas = Lines::where('tid_company', 1)->where('tid_id', $lineaTelefonica)->count();
+            $lineas = Lines::where('tid_company', 1)
+                ->where('tid_id', $lineaTelefonica)
+                ->where('tid_fecha', '>=', $fecha)
+                ->count();
             if ($lineas > 0 && $code == 0) {
                 $code = 305;
                 $message = 'La linea ya existe';
@@ -123,22 +124,21 @@ class LinesController extends Controller
             }
         };
         if ($code == 0) {
-            $linea = Lines::where('tid_company', 1)
+
+            $filasAfectadas = Lines::where('tid_company', 1)
                 ->where('tid_id', $lineaTelefonica)
                 ->where('tid_startdate', $fecha)
-                ->first();
-            if ($linea) {
-                $linea->tid_startdate = $nuevaFechaAlta;
-                if ($linea->save()) {
-                    $code = 0;
-                    $message = 'Linea modificada correctamente';
-                } else {
-                    $code = 999;
-                    $message = 'Error al modificar la linea';
-                }
+                ->update([
+                           'tid_startdate' => $nuevaFechaAlta
+                       ]);
+
+            if ($filasAfectadas == 1) {
+                $code = 0;
+                $message = 'Línea modificada correctamente';
             } else {
-                $code = 999;
-                $message = 'Error al modificar la linea';
+                // 0 filas afectadas: o no existía, o ya estaba con ese valor.
+                $code = 304; 
+                $message = 'Línea inexistente o ya dada de baja';
             }
         }
         return $this->return($code, $message);
@@ -173,7 +173,7 @@ class LinesController extends Controller
 
         if (empty($fechaBaja) && $code == 0) {
             $code = 303;
-            $message = 'La fecha de alta no puede estar vacia';
+            $message = 'La fecha de baja no puede estar vacia';
         }
         if (!empty($fechaBaja) && $code == 0) {
             $d = DateTime::createFromFormat('Y-m-d H:i:s', $fechaBaja);
@@ -186,23 +186,20 @@ class LinesController extends Controller
         };
 
         if ($code == 0) {
-            $linea = Lines::where('tid_company', 1)
+            $filasAfectadas = Lines::where('tid_company', 1)
                 ->where('tid_id', $lineaTelefonica)
-                ->where('tid_enddate', $fecha)
-                ->first();
+                ->where('tid_startdate', $fecha)
+                ->update([
+                           'tid_enddate' => $fechaBaja 
+                       ]);
 
-            if ($linea) {
-                $linea->tid_enddate = $fechaBaja;
-                if ($linea->save()) {
-                    $code = 0;
-                    $message = 'Linea modificada correctamente';
-                } else {
-                    $code = 999;
-                    $message = 'Error al modificar la linea';
-                }
+            if ($filasAfectadas == 1) {
+                $code = 0;
+                $message = 'Línea modificada correctamente';
             } else {
-                $code = 999;
-                $message = 'Error al modificar la linea';
+                // 0 filas afectadas: o no existía, o ya estaba con ese valor.
+                $code = 304; 
+                $message = 'Línea inexistente o ya dada de baja';
             }
         }
         return $this->return($code, $message);

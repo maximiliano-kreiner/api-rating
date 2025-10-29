@@ -110,13 +110,14 @@ class AccountsController extends Controller
         if ($account !== null) {
             $account->acc_enddate = $fechaBaja;
             if ($account->save()) {
+
+                $filasAfectadas = Lines::where('tid_company', 1)
+                    ->where('tid_account', $account->acc_id)
+                    ->update([
+                            'tid_enddate' => $fechaBaja 
+                        ]);
                 $code = 0;
-                $message = 'Cuenta modificada correctamente';
-                $lines = Lines::where('tid_company', 1)->where('tid_account', $account->acc_id)->first();
-                if ($lines) {
-                    $lines->tid_enddate = $fechaBaja;
-                    $lines->save();
-                }
+                $message = 'Cuenta modificada correctamente. Se dan de baja '. $filasAfectadas . ' lineas asociadas';
             } else {
                 $code = 999;
                 $message = 'Error al modificar la cuenta';
