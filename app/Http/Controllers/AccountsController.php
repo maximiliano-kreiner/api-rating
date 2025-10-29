@@ -138,6 +138,7 @@ class AccountsController extends Controller
 
                     $filasAfectadas = Lines::where('tid_company', 1)
                         ->where('tid_account', $account->acc_id)
+                        ->whereRaw("COALESCE(tid_enddate, 'infinity')::timestamp > ?", [$fechaBaja])
                         ->update([
                             'tid_enddate' => $fechaBaja
                         ]);
