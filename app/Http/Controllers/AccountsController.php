@@ -30,15 +30,15 @@ class AccountsController extends Controller
             $message = 'El ID del cliente no puede ser nulo o menor a 1';
         }
 
-        if ((empty($clienteId) || $clienteId <= 0) && $code == 0) {
+        if ( (empty($clienteId) || $clienteId <= 0) && $code == 0) {
             $code = 200;
             $message = 'El ID del cliente no puede ser nulo o menor a 1';
         }
-        if (empty($cuenta) && $code == 0) {
+        if ( empty($cuenta) && $code == 0) {
             $code = 201;
             $message = 'La cuenta no puede estar vacia';
         }
-        if (empty($plan) && $code == 0) {
+        if ( empty($plan) && $code == 0) {
             $code = 202;
             $message = 'El plan no puede estar vacio';
         } else {
@@ -49,20 +49,18 @@ class AccountsController extends Controller
             }
         }
 
-        if (empty($cuenta) && strlen($cuenta) > 50 && $code == 0) {
+        if ( (empty($cuenta) || strlen($cuenta) > 50) && $code == 0) {
             $code = 208;
             $message = 'La cuenta no puede tener mas de 50 caracteres';
         }
 
         $accountCount = Accounts::where('acc_name', $cuenta)->count();
         if ($accountCount > 0) {
-            $code = 999;
-            $message = 'Cuenta repetida';
+            $code = 203;
+            $message = 'Cuenta Existente';
         }
 
-
         if ($code == 0) {
-
             $account = new Accounts();
             $account->acc_company = 1;
             $account->acc_client = $clienteId;
@@ -72,14 +70,11 @@ class AccountsController extends Controller
             $account->acc_enddate = null;
             if ($account->save()) {
                 $code = 0;
-                $message = 'cuenta creada';
+                $message = 'Cuenta creada correctamente';
             } else {
                 $code = 999;
-                $message = 'Error';
+                $message = 'Error al crear la Cuenta';
             }
-
-            $code = 0;
-            $message = 'Cuenta creada correctamente';
         }
         return $this->return($code, $message);
     }

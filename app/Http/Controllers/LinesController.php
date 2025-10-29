@@ -54,11 +54,12 @@ class LinesController extends Controller
 
             $lineas = Lines::where('tid_company', 1)
                 ->where('tid_id', $lineaTelefonica)
-                ->where('tid_fecha', '>=', $fecha)
+                //->whereRaw("COALESCE(tid_endate, 'infnity') > '?'", [$fecha])
+                ->whereRaw("COALESCE( tid_endate, '0001-01-01 00:00:00') > '$fecha'")
                 ->count();
             if ($lineas > 0 && $code == 0) {
                 $code = 305;
-                $message = 'La linea ya existe';
+                $message = "La linea ya existe";
             } else {
                 if ($code == 0) {
                     $linea = new Lines();
