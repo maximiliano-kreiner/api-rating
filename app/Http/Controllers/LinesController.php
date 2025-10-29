@@ -54,8 +54,7 @@ class LinesController extends Controller
 
             $lineas = Lines::where('tid_company', 1)
                 ->where('tid_id', $lineaTelefonica)
-                //->whereRaw("COALESCE(tid_endate, 'infnity') > '?'", [$fecha])
-                ->whereRaw("COALESCE( tid_endate, '0001-01-01 00:00:00') > '$fecha'")
+                ->whereRaw("COALESCE(tid_endate, 'infinity')::timestamp > ?", [$fecha])
                 ->count();
             if ($lineas > 0 && $code == 0) {
                 $code = 305;
