@@ -129,7 +129,7 @@ class AccountsController extends Controller
         $fechaBaja  = date('Y-m-d H:i:s');
         $account = Accounts::where('acc_name', $cuenta)->first();
         if ($account !== null) {
-            if ($account->acc_enddate !== null) {
+            if ( ($account->acc_enddate !== null) && ($account->acc_enddate < $fechaBaja)) {
                 $code = 204;
                 $message = 'Cuenta ya dada de baja';
             } else {
