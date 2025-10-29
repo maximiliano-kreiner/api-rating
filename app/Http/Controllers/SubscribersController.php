@@ -43,9 +43,6 @@ class SubscribersController extends Controller
             }
         };
 
-
-
-
         if (empty($apellidos) && strlen($apellidos) > 40) {
             $code = 103;
             $message = 'El apellido no puede ser mayor a 40 caracteres';
@@ -83,6 +80,10 @@ class SubscribersController extends Controller
                         $code = 999;
                         $message = 'Error al reactivar el cliente';
                     }
+                } else {
+                    $code = 105;
+                    $message = 'Cliente existente y activo.';
+
                 }
             }
         }
