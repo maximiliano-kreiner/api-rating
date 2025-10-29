@@ -58,7 +58,7 @@ class LinesController extends Controller
                 ->count();
             if ($lineas > 0 && $code == 0) {
                 $code = 305;
-                $message = "La linea ya existe";
+                $message = "La linea ya existe para la fecha $fecha";
             } else {
                 if ($code == 0) {
                     $linea = new Lines();

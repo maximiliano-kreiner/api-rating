@@ -129,19 +129,24 @@ class AccountsController extends Controller
         $fechaBaja  = date('Y-m-d H:i:s');
         $account = Accounts::where('acc_name', $cuenta)->first();
         if ($account !== null) {
-            $account->acc_enddate = $fechaBaja;
-            if ($account->save()) {
-
-                $filasAfectadas = Lines::where('tid_company', 1)
-                    ->where('tid_account', $account->acc_id)
-                    ->update([
-                        'tid_enddate' => $fechaBaja
-                    ]);
-                $code = 0;
-                $message = 'Cuenta modificada correctamente. Se dan de baja ' . $filasAfectadas . ' lineas asociadas';
+            if ($account->acc_enddate !== null) {
+                $code = 204;
+                $message = 'Cuenta ya dada de baja';
             } else {
-                $code = 999;
-                $message = 'Error al modificar la cuenta';
+                $account->acc_enddate = $fechaBaja;
+                if ($account->save()) {
+
+                    $filasAfectadas = Lines::where('tid_company', 1)
+                        ->where('tid_account', $account->acc_id)
+                        ->update([
+                            'tid_enddate' => $fechaBaja
+                        ]);
+                    $code = 0;
+                    $message = 'Cuenta modificada correctamente. Se dan de baja ' . $filasAfectadas . ' lineas asociadas';
+                } else {
+                    $code = 999;
+                    $message = 'Error al modificar la cuenta';
+                }
             }
         } else {
             $code = 206;
