@@ -47,7 +47,6 @@ class LinesController extends Controller
         };
 
         $account = Accounts::where('acc_name', $cuenta)->first();
-        // dd( $account->acc_id);
         if ($account === null && $code == 0) {
             $code = 303;
             $message = 'La cuenta no existe';

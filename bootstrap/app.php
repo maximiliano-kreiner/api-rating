@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'status'  => 'error',
                 'message' => 'Recurso no encontrado',
                 'data'    => [],
+                'code'    => 999,
             ], 404);
             // }
         });
@@ -41,6 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 'status'  => 'error',
                 'message' => 'Error en la base de datos',
                 'data'    => [],
+                'code'    => 999,
                 'error' => app()->environment('local') ? $e->getMessage() : 'Error interno',
             ], 500);
             // }

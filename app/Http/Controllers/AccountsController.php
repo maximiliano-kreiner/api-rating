@@ -53,6 +53,14 @@ class AccountsController extends Controller
             $code = 208;
             $message = 'La cuenta no puede tener mas de 50 caracteres';
         }
+
+        $accountCount = Accounts::where('acc_name', $cuenta)->count();
+        if ($accountCount > 0) {
+            $code = 999;
+            $message = 'Cuenta repetida';
+        }
+
+
         if ($code == 0) {
 
             $account = new Accounts();
@@ -82,6 +90,24 @@ class AccountsController extends Controller
         $nuevaCuenta = $request->get('NuevaCuenta');
         $message = '';
         $code = 0;
+
+        if (empty($cuenta)) {
+            $code = 201;
+            $message = 'La cuenta no puede estar vacía';
+        } elseif (strlen($cuenta) > 50) {
+            $code = 208;
+            $message = 'La cuenta no puede tener más de 50 caracteres';
+        }
+
+        if ($code == 0 && empty($nuevaCuenta)) {
+            $code = 201;
+            $message = 'La cuenta nueva no puede estar vacía';
+        } elseif ($code == 0 && strlen($nuevaCuenta) > 50) {
+            $code = 208;
+            $message = 'La cuenta nueva no puede tener más de 50 caracteres';
+        }
+
+
         $account = Accounts::where('acc_name', $cuenta)->first();
         if ($account !== null) {
             $account->acc_name = $nuevaCuenta;
@@ -114,10 +140,10 @@ class AccountsController extends Controller
                 $filasAfectadas = Lines::where('tid_company', 1)
                     ->where('tid_account', $account->acc_id)
                     ->update([
-                            'tid_enddate' => $fechaBaja 
-                        ]);
+                        'tid_enddate' => $fechaBaja
+                    ]);
                 $code = 0;
-                $message = 'Cuenta modificada correctamente. Se dan de baja '. $filasAfectadas . ' lineas asociadas';
+                $message = 'Cuenta modificada correctamente. Se dan de baja ' . $filasAfectadas . ' lineas asociadas';
             } else {
                 $code = 999;
                 $message = 'Error al modificar la cuenta';
