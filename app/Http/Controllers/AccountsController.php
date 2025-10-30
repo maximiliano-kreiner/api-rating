@@ -102,20 +102,21 @@ class AccountsController extends Controller
             $message = 'La cuenta nueva no puede tener más de 50 caracteres';
         }
 
-
-        $account = Accounts::where('acc_name', $cuenta)->first();
-        if ($account !== null) {
-            $account->acc_name = $nuevaCuenta;
-            if ($account->save()) {
-                $code = 0;
-                $message = 'Cuenta modificada correctamente';
+        if ($code == 0 ) {
+            $account = Accounts::where('acc_name', $cuenta)->first();
+            if ($account !== null) {
+                $account->acc_name = $nuevaCuenta;
+                if ($account->save()) {
+                    $code = 0;
+                    $message = 'Cuenta modificada correctamente';
+                } else {
+                    $code = 999;
+                    $message = 'Error al modificar la cuenta';
+                }
             } else {
-                $code = 999;
-                $message = 'Error al modificar la cuenta';
+                $code = 206;
+                $message = "Cuenta inexistente";
             }
-        } else {
-            $code = 206;
-            $message = 'La cuenta no existe';
         }
 
         return $this->return($code, $message);
@@ -127,32 +128,39 @@ class AccountsController extends Controller
         $message = '';
         $cuenta = $request->get('Cuenta');
         $fechaBaja  = date('Y-m-d H:i:s');
-        $account = Accounts::where('acc_name', $cuenta)->first();
-        if ($account !== null) {
-            if ( ($account->acc_enddate !== null) && ($account->acc_enddate < $fechaBaja)) {
-                $code = 204;
-                $message = 'Cuenta ya dada de baja';
-            } else {
-                $account->acc_enddate = $fechaBaja;
-                if ($account->save()) {
 
-                    $filasAfectadas = Lines::where('tid_company', 1)
-                        ->where('tid_account', $account->acc_id)
-                        ->whereRaw("COALESCE(tid_enddate, 'infinity')::timestamp > ?", [$fechaBaja])
-                        ->update([
-                            'tid_enddate' => $fechaBaja
-                        ]);
-                    $code = 0;
-                    $message = 'Cuenta modificada correctamente. Se dan de baja ' . $filasAfectadas . ' lineas asociadas';
-                } else {
-                    $code = 999;
-                    $message = 'Error al modificar la cuenta';
-                }
-            }
+        if (empty($cuenta)) {
+            $code = 201;
+            $message = 'La cuenta no puede estar vacía';
         } else {
-            $code = 206;
-            $message = 'La cuenta no existe';
+            $account = Accounts::where('acc_name', $cuenta)->first();
+            if ($account !== null) {
+                if ( ($account->acc_enddate !== null) && ($account->acc_enddate < $fechaBaja)) {
+                    $code = 204;
+                    $message = 'Cuenta ya dada de baja';
+                } else {
+                    $account->acc_enddate = $fechaBaja;
+                    if ($account->save()) {
+
+                        $filasAfectadas = Lines::where('tid_company', 1)
+                            ->where('tid_account', $account->acc_id)
+                            ->whereRaw("COALESCE(tid_enddate, 'infinity')::timestamp > ?", [$fechaBaja])
+                            ->update([
+                                'tid_enddate' => $fechaBaja
+                            ]);
+                        $code = 0;
+                        $message = 'Cuenta modificada correctamente. Se dan de baja ' . $filasAfectadas . ' lineas asociadas';
+                    } else {
+                        $code = 999;
+                        $message = 'Error al modificar la cuenta';
+                    }
+                }
+            } else {
+                $code = 206;
+                $message = 'La cuenta no existe';
+            }
         }
+
         return $this->return($code, $message);
     }
 }

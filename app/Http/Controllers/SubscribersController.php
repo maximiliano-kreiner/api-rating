@@ -22,15 +22,15 @@ class SubscribersController extends Controller
         $message = '';
         if (empty($clienteId) || $clienteId <= 0) {
             $code = 100;
-            $message = 'El ID del cliente no puede ser nulo o menor a 1';
+            $message = 'ID Cliente no puede ser nulo o menor a 1';
         }
-        if (empty($Apellidos) && empty($nombres) && $code == 0) {
+        if (empty($apellidos) && empty($nombres) && $code == 0) {
             $code = 101;
-            $message = 'El nombre y apellido no pueden estar vacios';
+            $message = 'Nombres y Apellidso no pueden estar vacios';
         }
         if (empty($fecha) && $code == 0) {
             $code = 102;
-            $message = 'La fecha no puede estar vacia';
+            $message = 'Fecha no puede estar vacia';
         };
 
         if (!empty($fecha) && $code == 0) {
@@ -43,13 +43,13 @@ class SubscribersController extends Controller
             }
         };
 
-        if (empty($apellidos) && strlen($apellidos) > 40) {
+        if ( !empty($apellidos) && (strlen($apellidos) > 40) && $code == 0) {
             $code = 103;
-            $message = 'El apellido no puede ser mayor a 40 caracteres';
+            $message = 'Apellidos no puede tener mas de 40 caracteres';
         }
-        if (empty($nombres) && strlen($nombres) > 40 && $code == 0) {
+        if ( !empty($nombres) && (strlen($nombres) > 40) && $code == 0) {
             $code = 104;
-            $message = 'El nombre no puede ser mayor a 40 caracteres';
+            $message = 'Nombre no puede tener mas de 40 caracteres';
         }
 
         if ($code == 0) {
@@ -166,13 +166,23 @@ class SubscribersController extends Controller
         };
         if ($code == 0) {
             $cliente = Subscribers::find($id);
-            $cliente->cli_enddate =   $fechaBaja;
-            if ($cliente->save() && $code == 0) {
-                $code = 0;
-                $message = 'cliente dado de baja';
+            if ($cliente !== null) {
+                if ($cliente->cli_enddate !== null) {
+                    $code = 107;
+                    $message = 'Cliente en estado baja';
+                } else {
+                    $cliente->cli_enddate = $fechaBaja;
+                    if ($cliente->save() && $code == 0) {
+                        $code = 0;
+                        $message = 'Cliente dado de baja';
+                    } else {
+                        $code = 999;
+                        $message = 'Error al realizar la baja';
+                    }
+                }
             } else {
-                $code = 999;
-                $message = 'Error al realizar la baja';
+                $code = 106;
+                $message = 'Cliente inexistente';
             }
         }
         return $this->return($code, $message);
