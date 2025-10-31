@@ -186,11 +186,4 @@ class SubscribersController extends Controller
         }
         return $this->return($code, $message);
     }
-
-    public function null()
-    {
-        $code = 999;
-        $message = 'Cliente necesario';
-        return $this->return($code, $message);
-    }
 }
