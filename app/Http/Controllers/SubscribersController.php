@@ -43,11 +43,11 @@ class SubscribersController extends Controller
             }
         };
 
-        if ( !empty($apellidos) && (strlen($apellidos) > 40) && $code == 0) {
+        if (!empty($apellidos) && (strlen($apellidos) > 40) && $code == 0) {
             $code = 103;
             $message = 'Apellidos no puede tener mas de 40 caracteres';
         }
-        if ( !empty($nombres) && (strlen($nombres) > 40) && $code == 0) {
+        if (!empty($nombres) && (strlen($nombres) > 40) && $code == 0) {
             $code = 104;
             $message = 'Nombre no puede tener mas de 40 caracteres';
         }
@@ -83,7 +83,6 @@ class SubscribersController extends Controller
                 } else {
                     $code = 105;
                     $message = 'Cliente existente y activo.';
-
                 }
             }
         }
@@ -99,20 +98,20 @@ class SubscribersController extends Controller
         $apellidos = $request->get('Apellidos');
         $nombres = $request->get('Nombres');
 
-        if ( empty($clienteId) || $clienteId <= 0) {
+        if (empty($clienteId) || $clienteId <= 0) {
             $code = 100;
             $message = 'El ID del cliente no puede ser nulo o menor a 1';
         }
-        if ( ( empty($apellidos) || empty($nombres) ) && $code == 0) {
+        if ((empty($apellidos) || empty($nombres)) && $code == 0) {
             $code = 101;
             $message = 'El nombre y apellido no pueden estar vacios';
         }
 
-        if ( (empty($apellidos) || strlen($apellidos) > 40) && $code == 0) {
+        if ((empty($apellidos) || strlen($apellidos) > 40) && $code == 0) {
             $code = 103;
             $message = 'El apellido no puede ser mayor a 40 caracteres';
         }
-        if ( (empty($nombres) || strlen($nombres) > 40) && $code == 0) {
+        if ((empty($nombres) || strlen($nombres) > 40) && $code == 0) {
             $code = 104;
             $message = 'El nombre no puede ser mayor a 40 caracteres';
         }
@@ -185,6 +184,13 @@ class SubscribersController extends Controller
                 $message = 'Cliente inexistente';
             }
         }
+        return $this->return($code, $message);
+    }
+
+    public function null()
+    {
+        $code = 999;
+        $message = 'Cliente necesario';
         return $this->return($code, $message);
     }
 }
