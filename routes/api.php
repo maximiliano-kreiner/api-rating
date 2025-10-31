@@ -13,19 +13,20 @@ Route::get('/', function () {
 Route::group(['prefix' => 'subscriber'], function () {
     Route::post('/', [SubscribersController::class, 'save']); //altaCliente
     Route::put('/', [SubscribersController::class, 'null']);
+    Route::put('', [SubscribersController::class, 'null']);
     Route::put('/{id}', [SubscribersController::class, 'store'])->where(['id' => '[0-9]+']); //modificaCliente
     Route::post('/{id}/baja', [SubscribersController::class, 'destroy'])->where(['id' => '[0-9]+']); //bajaCliente
 
 });
 
 Route::group(['prefix' => 'account'], function () {
-    Route::post('/', [AccountsController::class, 'save']);//altaCuenta
-    Route::put('/', [AccountsController::class, 'store']);//modificaNombreCuenta
-    Route::post('/baja', [AccountsController::class, 'destroy']);//bajaCuenta
+    Route::post('/', [AccountsController::class, 'save']); //altaCuenta
+    Route::put('/', [AccountsController::class, 'store']); //modificaNombreCuenta
+    Route::post('/baja', [AccountsController::class, 'destroy']); //bajaCuenta
 });
 
 Route::group(['prefix' => 'lines'], function () {
-    Route::post('/', [LinesController::class, 'save']);//altaLinea
-    Route::put('/fechaAlta', [LinesController::class, 'store']);//modificaFechaAltaLinea
-    Route::put('/fechaBaja', [LinesController::class, 'destroy']);//modificaFechaBajaLinea
+    Route::post('/', [LinesController::class, 'save']); //altaLinea
+    Route::put('/fechaAlta', [LinesController::class, 'store']); //modificaFechaAltaLinea
+    Route::put('/fechaBaja', [LinesController::class, 'destroy']); //modificaFechaBajaLinea
 });
