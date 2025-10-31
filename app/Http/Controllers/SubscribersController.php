@@ -90,12 +90,12 @@ class SubscribersController extends Controller
         return $this->return($code, $message);
     }
 
-    public function store($id, Request $request)
+    public function store(Request $request)
     {
 
         $code = 0;
-        $clienteId = $id;
         $apellidos = $request->get('Apellidos');
+        $clienteId = $request->get('ClienteId');
         $nombres = $request->get('Nombres');
 
         if (empty($clienteId) || $clienteId <= 0) {
