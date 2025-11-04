@@ -13,7 +13,7 @@ Route::get('/', function () {
 Route::group(['prefix' => 'subscriber'], function () {
     Route::post('/', [SubscribersController::class, 'save']); //altaCliente
     Route::put('/', [SubscribersController::class, 'store']); //modificaCliente
-    Route::post('/{id}/baja', [SubscribersController::class, 'destroy'])->where(['id' => '[0-9]+']); //bajaCliente
+    Route::post('/baja', [SubscribersController::class, 'destroy']); //bajaCliente
 });
 
 Route::group(['prefix' => 'account'], function () {

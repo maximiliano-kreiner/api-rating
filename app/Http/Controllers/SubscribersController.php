@@ -138,11 +138,11 @@ class SubscribersController extends Controller
         return $this->return($code, $message);
     }
 
-    public function destroy($id, Request $request)
+    public function destroy(Request $request)
     {
         $code = 0;
         $message = '';
-        $clienteId = $id;
+        $clienteId = $request->get('ClienteId');
         $fechaBaja = $request->get('fechaBaja');
         if (empty($clienteId) || $clienteId <= 0) {
             $code = 100;
