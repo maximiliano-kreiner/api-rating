@@ -164,7 +164,7 @@ class SubscribersController extends Controller
             }
         };
         if ($code == 0) {
-            $cliente = Subscribers::find($id);
+            $cliente = Subscribers::find($clienteId);
             if ($cliente !== null) {
                 if ($cliente->cli_enddate !== null) {
                     $code = 107;
