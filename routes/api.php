@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\LinesController;
+use App\Http\Controllers\PlansController;
 use App\Http\Controllers\SubscribersController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,4 +27,8 @@ Route::group(['prefix' => 'lines'], function () {
     Route::post('/', [LinesController::class, 'save']); //altaLinea
     Route::put('/fechaAlta', [LinesController::class, 'store']); //modificaFechaAltaLinea
     Route::put('/fechaBaja', [LinesController::class, 'destroy']); //modificaFechaBajaLinea
+});
+
+Route::group(['prefix' => 'plans'], function () {
+    Route::get('/', [PlansController::class, 'index']); //altaLinea
 });
