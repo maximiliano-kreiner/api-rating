@@ -16,9 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
-        // $middleware->alias([
-        //     'jwt' => JwtMiddleware::class
+        $middleware->append(\App\Http\Middleware\ApiRequestLogger::class);
+        // O si querés que se aplique sólo al grupo API:
+        // $middleware->api(append: [
+        //     \App\Http\Middleware\ApiRequestLogger::class,
         // ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
