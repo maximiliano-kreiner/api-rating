@@ -30,5 +30,5 @@ Route::group(['prefix' => 'lines'], function () {
 });
 
 Route::group(['prefix' => 'plans'], function () {
-    Route::get('/', [PlansController::class, 'index']); //altaLinea
+    Route::get('/', [PlansController::class, 'index']);
 });
