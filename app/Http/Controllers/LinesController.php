@@ -51,14 +51,14 @@ class LinesController extends Controller
             $code = 303;
             $message = 'La cuenta no existe';
         } else {
-
-            $lineas = Lines::where('tid_company', 1)
-                ->where('tid_id', $lineaTelefonica)
-                ->whereRaw("COALESCE(tid_enddate, 'infinity')::timestamp > ?", [$fecha])
-                ->count();
-            if ($lineas > 0 && $code == 0) {
+            $nombreCuenta = Lines::from('pbs_rating.ra_tariff_identification as t')
+                ->join('pbs_rating.ra_accounts as a', 't.tid_account', '=', 'a.acc_id')
+                ->where('t.tid_id', $lineaTelefonica)
+                ->whereRaw("COALESCE(t.tid_enddate, 'infinity')::timestamp > ?", [$fecha])
+                ->value('a.acc_name');
+            if ($nombreCuenta && $code == 0) {
                 $code = 305;
-                $message = "La linea ya existe para la fecha $fecha";
+                $message = "La linea ya existe para la cuenta $nombreCuenta";
             } else {
                 if ($code == 0) {
                     $linea = new Lines();
@@ -128,15 +128,15 @@ class LinesController extends Controller
                 ->where('tid_id', $lineaTelefonica)
                 ->where('tid_startdate', $fecha)
                 ->update([
-                           'tid_startdate' => $nuevaFechaAlta
-                       ]);
+                    'tid_startdate' => $nuevaFechaAlta
+                ]);
 
             if ($filasAfectadas == 1) {
                 $code = 0;
                 $message = 'Línea modificada correctamente';
             } else {
                 // 0 filas afectadas: o no existía, o ya estaba con ese valor.
-                $code = 304; 
+                $code = 304;
                 $message = 'Línea inexistente o ya dada de baja';
             }
         }
@@ -189,15 +189,15 @@ class LinesController extends Controller
                 ->where('tid_id', $lineaTelefonica)
                 ->where('tid_startdate', $fecha)
                 ->update([
-                           'tid_enddate' => $fechaBaja 
-                       ]);
+                    'tid_enddate' => $fechaBaja
+                ]);
 
             if ($filasAfectadas == 1) {
                 $code = 0;
                 $message = 'Línea modificada correctamente';
             } else {
                 // 0 filas afectadas: o no existía, o ya estaba con ese valor.
-                $code = 304; 
+                $code = 304;
                 $message = 'Línea inexistente o ya dada de baja';
             }
         }
